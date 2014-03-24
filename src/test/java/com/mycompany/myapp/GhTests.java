@@ -1,9 +1,21 @@
+package com.mycompany.myapp;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.actuate.autoconfigure.ManagementSecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import com.mycompany.myapp.config.SecurityConfiguration;
 
@@ -23,10 +35,16 @@ import com.mycompany.myapp.config.SecurityConfiguration;
  * limitations under the License.
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={BootConfig.class,SecurityConfiguration.class,SecurityAutoConfiguration.class,ManagementSecurityAutoConfiguration.class})
 public class GhTests {
 
+    private AnnotationConfigWebApplicationContext context;
+
     @Test
-    public void loads() {}
+    public void testWebConfiguration() throws Exception {
+        this.context = new AnnotationConfigWebApplicationContext();
+        this.context.setServletContext(new MockServletContext());
+        this.context.register(SecurityAutoConfiguration.class,
+                PropertyPlaceholderAutoConfiguration.class);
+        context.refresh();
+    }
 }
